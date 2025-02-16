@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>MongoDB CRUD Example</title>
+</head>
+<body>
+    <h1>MongoDB CRUD Example</h1>
+    
+    <button onclick="createRandomString()">Create Random String</button>
+    <button onclick="fetchStrings()">View All Strings</button>
+    <button onclick="deleteRandomString()">Delete Random String</button>
+    
+    <h2>Stored Strings:</h2>
+    <ul id="stringList"></ul>
+
+    <script>
+        async function createRandomString() {
+            const randomStr = Math.random().toString(36).substring(7);
+            const response = await fetch('http://localhost:3000/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ value: randomStr })
+            });
+            const data = await response.json();
+            console.log('Created:', data);
+            fetchStrings();
+        }
+
+        async function fetchStrings() {
+            const response = await fetch('http://localhost:3000/display');
+            const data = await response.json();
+            const list = document.getElementById('stringList');
+            list.innerHTML = '';
+            data.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.value} (ID: ${item._id})`;
+                list.appendChild(li);
+            });
+        }
+
+        async function deleteRandomString() {
+            const response = await fetch('http://localhost:3000/display');
+            const data = await response.json();
+            if (data.length === 0) {
+                alert('No strings to delete');
+                return;
+            }
+            const randomItem = data[Math.floor(Math.random() * data.length)];
+            await fetch(`http://localhost:3000/delete/${randomItem._id}`, {
+                method: 'DELETE'
+            });
+            console.log('Deleted:', randomItem);
+            fetchStrings();
+        }
+    </script>
+</body>
+</html>
