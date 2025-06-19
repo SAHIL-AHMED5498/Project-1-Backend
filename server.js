@@ -15,8 +15,10 @@ mongoose.connect(`mongodb+srv://ahmedsahil5498:${process.env.DB_PASSWORD}@cluste
 .then(() => console.log("MongoDB connected successfully"))
 .catch(err => console.error("MongoDB connection error:", err));
 
-// Define schema
+// Defined string schema
 const StringSchema = new mongoose.Schema({ value: String });
+
+//created string model
 const StringModel = mongoose.model('String', StringSchema);
 
 // Create a new random string
